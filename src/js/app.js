@@ -7,18 +7,13 @@ var ajax = require('ajax');
 var Vector2 = require('vector2');
 var Settings = require('settings');
 
-Settings.data('sites', ['http://www.reddit.com/notfound',
-                        'http://news.ycombinator.com',
-                        'http://myspace.com',
-                        'http://www.facebook.com',
-                        'http://www.example.com/notfound']);
-
 var sites = Settings.data('sites');
 var siteElements = [];
+var addSitesElement;
 var activeIndex = -1;
 var main = new UI.Window({
   scrollable: true,
-  backgroundColor: 'darkGray'
+  backgroundColor: 'lightGray'
 });
 
 function displayStatus(url, status, positionY) {
@@ -30,7 +25,7 @@ function displayStatus(url, status, positionY) {
   });
 
   var divider = new UI.Rect({
-    backgroundColor: 'black',
+    backgroundColor: 'white',
     size: new Vector2(144, 1),
     position: new Vector2(0, positionY + 22)
   });
@@ -42,6 +37,8 @@ function displayStatus(url, status, positionY) {
   });
  
   var domainText = url.match(/https*:\/\/([^\/]*).*/)[1];
+  domainText = domainText.replace('www.', '');
+
   var domain = new UI.Text({
     position: new Vector2(30, positionY),
     color: 'white',
@@ -81,6 +78,10 @@ function displayStatus(url, status, positionY) {
 }
 
 function removeSiteElements() {
+  if(addSitesElement) {
+    main.remove(addSitesElement); 
+  }
+
   siteElements.forEach(function(elm) {
     for(var k in elm) {
       main.remove(elm[k]); 
@@ -89,34 +90,38 @@ function removeSiteElements() {
 }
 
 function getStatuses() {
-  var positionY = 30;
+  var positionY = 3;
 
   // Remove existing site elements
   removeSiteElements();
 
-  sites.forEach(function(url) {
-    (function(u) {
-      ajax({
-        url: url,
-        method: 'get',
-      }, function(data, status, request) {
-        positionY = displayStatus(url, status, positionY);
-      }, function(data, status, request) {
-        positionY = displayStatus(url, status, positionY);
-      });
-    })(url);
-  });
+  if(sites.length) {
+    sites.forEach(function(url) {
+      (function(u) {
+        ajax({
+          url: url,
+          method: 'get',
+        }, function(data, status, request) {
+          positionY = displayStatus(url, status, positionY);
+        }, function(data, status, request) {
+          positionY = displayStatus(url, status, positionY);
+        });
+      })(url);
+    });
+  } else {
+    addSitesElement = new UI.Text({
+      position: new Vector2(5, 10),
+      color: 'black',
+      font: 'gothic-14',
+      size: new Vector2(134, 50),
+      text: 'Welcome! Add URLs to monitor via the app settings page on your phone.',
+      textAlign: 'center',
+    }); 
+
+    main.add(addSitesElement);
+  }
 }
 
-var title = new UI.Text({
-  text: 'SiteStatus',
-  textAlign: 'center',
-  position: new Vector2(0, 0),
-  size: new Vector2(144, 20),
-  font: 'gothic-18-bold'
-});
-
 main.on('click', 'select', getStatuses);
-main.add(title);
 getStatuses();
 main.show();
