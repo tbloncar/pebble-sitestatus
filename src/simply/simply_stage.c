@@ -42,6 +42,7 @@ struct __attribute__((__packed__)) ElementCommonPacket {
   uint32_t id;
   GRect frame;
   GColor8 background_color;
+  GColor8 background_color_mono; /* moonbeam */
   GColor8 border_color;
 };
 
@@ -68,6 +69,7 @@ struct __attribute__((__packed__)) ElementTextStylePacket {
   Packet packet;
   uint32_t id;
   GColor8 color;
+  GColor8 color_mono; /* moonbeam */
   GTextOverflowMode overflow_mode:8;
   GTextAlignment alignment:8;
   uint32_t custom_font;
@@ -521,7 +523,15 @@ static void handle_element_common_packet(Simply *simply, Packet *data) {
     return;
   }
   simply_stage_set_element_frame(simply->stage, element, packet->frame);
-  element->background_color = packet->background_color;
+
+  /* moonbeam */
+  #ifdef PBL_COLOR
+    element->background_color = packet->background_color;
+  #else
+    element->background_color = packet->background_color_mono;
+  #endif 
+  /* /moonbeam */
+
   element->border_color = packet->border_color;
   simply_stage_update(simply->stage);
 }
@@ -556,7 +566,15 @@ static void handle_element_text_style_packet(Simply *simply, Packet *data) {
   if (!element) {
     return;
   }
-  element->text_color = packet->color;
+
+  /* moonbeam */
+  #ifdef PBL_COLOR
+    element->text_color = packet->color;
+  #else
+    element->text_color = packet->color_mono;
+  #endif
+  /* /moonbeam */
+
   element->overflow_mode = packet->overflow_mode;
   element->alignment = packet->alignment;
   if (packet->custom_font) {

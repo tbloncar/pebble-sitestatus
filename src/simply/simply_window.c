@@ -20,6 +20,7 @@ struct __attribute__((__packed__)) WindowPropsPacket {
   Packet packet;
   uint32_t id;
   GColor8 background_color;
+  GColor8 background_color_mono; /* moonbeam */
   bool fullscreen;
   bool scrollable;
 };
@@ -303,7 +304,15 @@ static void handle_window_props_packet(Simply *simply, Packet *data) {
     return;
   }
   window->id = packet->id;
-  simply_window_set_background_color(window, packet->background_color);
+
+  /* moonbeam */
+  #ifdef PBL_COLOR
+    simply_window_set_background_color(window, packet->background_color);
+  #else
+    simply_window_set_background_color(window, packet->background_color_mono);
+  #endif
+  /* /moonbeam */
+
   simply_window_set_fullscreen(window, packet->fullscreen);
   simply_window_set_scrollable(window, packet->scrollable);
 }

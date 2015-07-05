@@ -396,6 +396,7 @@ var WindowPropsPacket = new struct([
   [Packet, 'packet'],
   ['uint32', 'id'],
   ['uint8', 'backgroundColor', Color],
+  ['uint8', 'backgroundColorMono', Color],
   ['bool', 'fullscreen', BoolType],
   ['bool', 'scrollable', BoolType],
 ]);
@@ -611,6 +612,7 @@ var ElementCommonPacket = new struct([
   [GPoint, 'position', PositionType],
   [GSize, 'size', SizeType],
   ['uint8', 'backgroundColor', Color],
+  ['uint8', 'backgroundColorMono', Color],
   ['uint8', 'borderColor', Color],
 ]);
 
@@ -631,6 +633,7 @@ var ElementTextStylePacket = new struct([
   [Packet, 'packet'],
   ['uint32', 'id'],
   ['uint8', 'color', Color],
+  ['uint8', 'colorMono', Color],
   ['uint8', 'textOverflow', TextOverflowMode],
   ['uint8', 'textAlign', TextAlignment],
   ['uint32', 'customFont'],
@@ -887,7 +890,8 @@ SimplyPebble.windowHide = function(id) {
 SimplyPebble.windowProps = function(def) {
   WindowPropsPacket
     .prop(def)
-    .backgroundColor(def.backgroundColor || 'white');
+    .backgroundColor(def.backgroundColor || 'white')
+    .backgroundColorMono(def.backgroundColorMono || 'white');
   SimplyPebble.sendPacket(WindowPropsPacket);
 };
 
@@ -1064,6 +1068,7 @@ SimplyPebble.elementCommon = function(id, def) {
     .id(id)
     .position(def.position)
     .size(def.size)
+    .backgroundColorMono(def.backgroundColorMono || 'clear')
     .prop(def);
   SimplyPebble.sendPacket(ElementCommonPacket);
 };
