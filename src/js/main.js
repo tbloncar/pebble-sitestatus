@@ -20,7 +20,7 @@ Pebble.addEventListener('showConfiguration', function(e) {
   var sites = Settings.data('sites') || [];
   var sitesParam = encodeURIComponent(JSON.stringify(sites));
 
-  Pebble.openURL('http://streamflying.com/pebble/sitestatus?sites=' + sitesParam);
+  Pebble.openURL('http://107.170.129.79/pebble/sitestatus?sites=' + sitesParam);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {

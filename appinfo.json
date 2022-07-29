@@ -3,8 +3,8 @@
   "shortName": "SiteStatus",
   "longName": "SiteStatus",
   "companyName": "Moonbeam Labs",
-  "versionCode": 1.3,
-  "versionLabel": "1.3",
+  "versionCode": 1.4,
+  "versionLabel": "1.4",
   "capabilities": [
     "configurable"
   ],
